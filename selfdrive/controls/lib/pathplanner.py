@@ -7,6 +7,7 @@ from selfdrive.controls.lib.drive_helpers import MPC_COST_LAT
 from selfdrive.controls.lib.lane_planner import LanePlanner
 import selfdrive.messaging as messaging
 from selfdrive.kegman_conf import kegman_conf
+from selfdrive.controls.lib.curvature_learner import CurvatureLearner
 
 LOG_MPC = os.environ.get('LOG_MPC', True)
 
@@ -25,15 +26,14 @@ class PathPlanner():
 
     self.setup_mpc(CP.steerRateCost)
     self.solution_invalid_cnt = 0
+    self.curvature_offset = CurvatureLearner(debug=False)
     self.path_offset_i = 0.0
     self.mpc_frame = 0
-    
     kegman = kegman_conf(CP)
     if kegman.conf['steerRatio'] == "-1":
       self.steerRatio = CP.steerRatio
     else:
       self.steerRatio = float(kegman.conf['steerRatio'])
-      
     if kegman.conf['steerRateCost'] == "-1":
       self.steerRateCost = CP.steerRateCost
     else:
@@ -41,8 +41,6 @@ class PathPlanner():
 
     self.steerRateCost_prev = self.steerRateCost
     self.setup_mpc(self.steerRateCost)
-    
-      
   def setup_mpc(self, steer_rate_cost):
     self.libmpc = libmpc_py.libmpc
     self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.LANE, MPC_COST_LAT.HEADING, steer_rate_cost)
@@ -58,10 +56,8 @@ class PathPlanner():
     self.angle_steers_des_mpc = 0.0
     self.angle_steers_des_prev = 0.0
     self.angle_steers_des_time = 0.0
-    
 
   def update(self, sm, pm, CP, VM):
-    
     self.mpc_frame += 1
     if self.mpc_frame % 300 == 0:
       # live tuning through /data/openpilot/tune.py overrides interface.py settings
@@ -72,10 +68,7 @@ class PathPlanner():
         if self.steerRateCost != self.steerRateCost_prev:
           self.setup_mpc(self.steerRateCost)
           self.steerRateCost_prev = self.steerRateCost
-         
-      self.mpc_frame = 0  
-    
-    
+      self.mpc_frame = 0
     v_ego = sm['carState'].vEgo
     angle_steers = sm['carState'].steeringAngle
     active = sm['controlsState'].active
@@ -87,7 +80,13 @@ class PathPlanner():
     # Run MPC
     self.angle_steers_des_prev = self.angle_steers_des_mpc
     VM.update_params(sm['liveParameters'].stiffnessFactor, sm['liveParameters'].steerRatio)
-    curvature_factor = VM.curvature_factor(v_ego)
+
+    if active:
+      curvfac = self.curvature_offset.update(angle_steers - angle_offset, self.LP.d_poly, v_ego)
+    else:
+      curvfac = 0.
+
+    curvature_factor = VM.curvature_factor(v_ego) + curvfac
 
     # TODO: Check for active, override, and saturation
     # if active:
