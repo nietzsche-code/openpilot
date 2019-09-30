@@ -203,7 +203,7 @@ FINGERPRINTS = {
   }]
 }
 
-STEER_THRESHOLD = 100
+STEER_THRESHOLD = 250
 
 DBC = {
   CAR.RAV4H: dbc_dict('toyota_rav4_hybrid_2017_pt_generated', 'toyota_adas'),
