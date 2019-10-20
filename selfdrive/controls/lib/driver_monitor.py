@@ -7,8 +7,8 @@ from common.stat_live import RunningStatFilter
 _AWARENESS_TIME = 100.  # 1.6 minutes limit without user touching steering wheels make the car enter a terminal status
 _AWARENESS_PRE_TIME_TILL_TERMINAL = 25.  # a first alert is issued 25s before expiration
 _AWARENESS_PROMPT_TIME_TILL_TERMINAL = 15.  # a second alert is issued 15s before start decelerating the car
-_DISTRACTED_TIME = 11.
-_DISTRACTED_PRE_TIME_TILL_TERMINAL = 8.
+_DISTRACTED_TIME = 60.
+_DISTRACTED_PRE_TIME_TILL_TERMINAL = 10.
 _DISTRACTED_PROMPT_TIME_TILL_TERMINAL = 6.
 
 _FACE_THRESHOLD = 0.4
