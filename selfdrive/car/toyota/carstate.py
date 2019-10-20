@@ -1,4 +1,5 @@
 from cereal import car
+
 from common.numpy_fast import mean
 from common.kalman.simple_kalman import KF1D
 from selfdrive.can.can_define import CANDefine
