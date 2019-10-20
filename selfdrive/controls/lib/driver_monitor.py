@@ -10,9 +10,9 @@ _DTM = 0.1                  # DM runs at 10Hz
 _AWARENESS_TIME = min(int(kegman.conf['wheelTouchSeconds']), 600)    # x minutes limit without user touching steering wheels make the car enter a terminal status
 _AWARENESS_PRE_TIME = 20.   # a first alert is issued 20s before expiration
 _AWARENESS_PROMPT_TIME = 5. # a second alert is issued 5s before start decelerating the car
-_DISTRACTED_TIME = 7.
-_DISTRACTED_PRE_TIME = 4.
-_DISTRACTED_PROMPT_TIME = 2.
+_DISTRACTED_TIME = 60.
+_DISTRACTED_PRE_TIME = 10.
+_DISTRACTED_PROMPT_TIME = 5.
 # model output refers to center of cropped image, so need to apply the x displacement offset
 _PITCH_WEIGHT = 1.5  # pitch matters a lot more
 _METRIC_THRESHOLD = 0.4
