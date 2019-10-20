@@ -364,7 +364,6 @@ class CarInterface(CarInterfaceBase):
     ret.rightBlinker = bool(self.CS.right_blinker_on)
 
     ret.doorOpen = not self.CS.door_all_closed
-    ret.seatbeltUnlatched = not self.CS.seatbelt
 
     ret.genericToggle = self.CS.generic_toggle
     ret.laneDepartureToggle = self.CS.lane_departure_toggle_on
@@ -382,8 +381,6 @@ class CarInterface(CarInterfaceBase):
       events.append(create_event('wrongGear', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if ret.doorOpen:
       events.append(create_event('doorOpen', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
-    if ret.seatbeltUnlatched:
-      events.append(create_event('seatbeltNotLatched', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if self.CS.esp_disabled and self.CP.enableDsu:
       events.append(create_event('espDisabled', [ET.NO_ENTRY, ET.SOFT_DISABLE]))
     if not self.CS.main_on and self.CP.enableDsu:
