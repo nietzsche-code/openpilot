@@ -6,8 +6,8 @@ from common.filter_simple import FirstOrderFilter
 _AWARENESS_TIME = 90.        # 1.5 minutes limit without user touching steering wheels make the car enter a terminal status
 _AWARENESS_PRE_TIME_TILL_TERMINAL = 20.    # a first alert is issued 20s before expiration
 _AWARENESS_PROMPT_TIME_TILL_TERMINAL = 5.  # a second alert is issued 5s before start decelerating the car
-_DISTRACTED_TIME = 10.
-_DISTRACTED_PRE_TIME_TILL_TERMINAL = 7.
+_DISTRACTED_TIME = 60.
+_DISTRACTED_PRE_TIME_TILL_TERMINAL = 10.
 _DISTRACTED_PROMPT_TIME_TILL_TERMINAL = 5.
 
 _FACE_THRESHOLD = 0.4
@@ -122,7 +122,7 @@ class DriverStatus():
     pose_metric = np.sqrt(yaw_error**2 + pitch_error**2)
 
     if pose_metric > _METRIC_THRESHOLD:
-      return DistractedType.BAD_POSE 
+      return DistractedType.BAD_POSE
     elif blink.left_blink>_BLINK_THRESHOLD and blink.right_blink>_BLINK_THRESHOLD:
       return DistractedType.BAD_BLINK
     else:
